@@ -16,11 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: balena-io/deploy-to-balena-action@v0.8.4
+      - uses: balena-io/deploy-to-balena-action@v0.11.0
         with:
           balena_token: ${{ secrets.BALENA_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          environment: balena-cloud.com
           fleet: ${{ matrix.fleet }}
-          versionbot: false
-          create_tag: true
