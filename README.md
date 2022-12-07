@@ -27,20 +27,19 @@ You can one-click-deploy this project to balena using the button below:
 
 ## Manual Deployment
 
-Alternatively, deployment can be carried out by manually creating a [balenaCloud account](https://dashboard.balena-cloud.com) and application, flashing a device, downloading the project and pushing it via either Git or the [balena CLI](https://github.com/balena-io/balena-cli).
+Alternatively, deployment can be carried out by manually creating a [balenaCloud account](https://dashboard.balena-cloud.com) and application, flashing a device, downloading the project and pushing it via the [balena CLI](https://github.com/balena-io/balena-cli).
 
 ### Device Variables
 
 Device Variables apply to all services within the application, and can be applied fleet-wide to apply to multiple devices. If you used the one-click-deploy method, the default environment variables will already be added for you to customize as needed.
 
-| Name              | Example            | Purpose                                                                                                                                                                                                                       |
-| ----------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TZ`              | `America/Toronto`  | Inform services of the timezone in your location, in order to set times and dates within the applications correctly. Find a [list of all timezone values here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
-| `INTERFACE`       | `eth0`             | Provide the name of your device's primary network interface, usually `eth0` for wired or `wlan0` for wireless. This is required to avoid conflicts with balena DNS on internal interfaces.                                    |
-| `WEBPASSWORD`     | `mysecretpassword` | Password for accessing the web-based interface of Pi-hole - you won’t be able to access the admin panel without defining a password here.                                                                                     |
-| `PIHOLE_DNS_`     | `1.1.1.1;1.0.0.1`  | Tell Pi-hole where to forward DNS requests that aren’t blocked. We’re using Cloudflare by default but you can specify your own using IPs delimited by semi-colons.                                                            |
-| `ServerIP`        | `x.x.x.x`          | Set to your device's primary network IPv4 address, used by web block modes and lighttpd bind.                                                                                                                                 |
-| `DEVICE_HOSTNAME` | `pihole`           | Set a custom hostname on application start so it can be reached via MDNS like `pihole.local`.                                                                                                                                 |
+| Name           | Default           | Purpose                                                                                                                                                            |
+| -------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TZ`           | `UTC`             | The timezone in your location. Find a [list of all timezone values here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).                            |
+| `INTERFACE`    | `eth0`            | Provide the name of your device's primary network interface, usually `eth0` for wired or `wlan0` for wireless.                                                     |
+| `WEBPASSWORD`  | `balena`          | Password for accessing the web-based interface of Pi-hole - you won’t be able to access the admin panel without defining a password here.                          |
+| `PIHOLE_DNS_`  | `1.1.1.1;1.0.0.1` | Tell Pi-hole where to forward DNS requests that aren’t blocked. We’re using Cloudflare by default but you can specify your own using IPs delimited by semi-colons. |
+| `SET_HOSTNAME` | `pihole`          | Set a custom device hostname on application start.                                                                                                                 |
 
 ## Usage
 
@@ -52,15 +51,15 @@ Check out our blog post on how to deploy network-wide ad-blocking with Pi-hole:
 
 Once your device joins the fleet you'll need to allow some time for it to download the application and download blocklists.
 
-When it's done you should be able to access the access the app at http://pihole.local with a default password of `balena`.
+When it's done you should be able to access the access the app at <http://pihole.local> with a default password of `balena`.
 
 On your router or DHCP server assign a static IP to your Pi-hole device, and set your clients DNS to the same IP address.
 
-Documentation for Pi-hole can be found at https://docs.pi-hole.net/
+Documentation for Pi-hole can be found at <https://docs.pi-hole.net/>
 
 ### PADD
 
-Note that balena-pihole uses the [fbcp block](https://github.com/balenablocks/fbcp).
+Note that this project uses the [fbcp block](https://github.com/balenablocks/fbcp).
 
 The PiTFT LCD screens [from Adafruit (and others)](https://www.adafruit.com/?q=pitft) are supported.
 
@@ -90,13 +89,19 @@ variables might be required for proper scaling and resolutions:
 | BALENA_HOST_CONFIG_hdmi_mode          | 87                 |
 | BALENA_HOST_CONFIG_rotate_screen      | 1                  |
 
-### D-Bus
+#### FONTFACE and FONTSIZE
 
-The D-Bus service is a workaround to prevent display buffer conflicts when running development images.
+Use the environment variables `FONTFACE` and `FONTSIZE` to control the PADD text size on your display.
 
-It is expected behavior for this container to run once on app updates and then exit.
+Valid font faces are:
 
-It will remain in `Exited` status during normal operation.
+- VGA (sizes 8x8, 8x14, 8x16, 16x28 and 16x32)
+- Terminus (sizes 6x12, 8x14, 8x16, 10x20, 12x24, 14x28 and 16x32)
+- TerminusBold (sizes 8x14, 8x16, 10x20, 12x24, 14x28 and 16x32)
+- TerminusBoldVGA (sizes 8x14 and 8x16)
+- Fixed (sizes 8x13, 8x14, 8x15, 8x16 and 8x18)
+
+From: <https://manpages.debian.org/bullseye/console-setup/console-setup.5.en.html>
 
 ### Unbound
 
@@ -104,13 +109,13 @@ This project includes an Unbound service providing recursive DNS, but it is not 
 
 Read more about the reasons for using a recursive DNS with Pi-hole here:
 
-https://docs.pi-hole.net/guides/unbound/
+<https://docs.pi-hole.net/guides/unbound/>
 
 Set the following environment variable in your balenaCloud Dashboard to tell Pi-hole to forward DNS requests that aren’t blocked to the local Unbound DNS resolver service.
 
 - `PIHOLE_DNS_`: `127.0.0.1#5053;127.0.0.1#5053`
 
-**Note:** For security and footprint reasons, the Unbound container does not allow shell or terminal access via ssh or the balenaCloud console.
+**Note:** For security and footprint reasons, the Unbound container does not allow shell or terminal access via SSH or the balenaCloud console.
 
 Advanced users can change the Unbound configuration by editing [`unbound.conf`](./unbound/unbound.conf) or [`a-records.conf`](./unbound/a-records.conf) before pushing the app to balenaCloud.
 

@@ -1,16 +1,17 @@
-#!/usr/bin/with-contenv bash
+#!/command/with-contenv bash
+# shellcheck shell=bash
+
 set -e
 
-# set a hostname for mDNS (default to pihole.local)
-if [ -n "${DEVICE_HOSTNAME}" ]
-then
-   curl -X PATCH --header "Content-Type:application/json" \
-      --data "{\"network\": {\"hostname\": \"${DEVICE_HOSTNAME}\"}}" \
-      "${BALENA_SUPERVISOR_ADDRESS}/v1/device/host-config?apikey=${BALENA_SUPERVISOR_API_KEY}" || true
-fi
+pihole -a -p "${WEBPASSWORD}" || true
 
 while [ -z "$(ip -o -4 addr show dev "${INTERFACE}")" ]
 do
-   echo "waiting for IPv4 address on ${INTERFACE}..."
+   echo "Waiting for IPv4 address on ${INTERFACE}..."
    sleep 5
 done
+
+# https://serverfault.com/a/817791
+# force dnsmasq to bind only the interfaces it is listening on
+# otherwise dnsmasq will fail to start since balena is using 53 on some interfaces
+echo "bind-interfaces" > /etc/dnsmasq.d/balena.conf
