@@ -1,10 +1,13 @@
 # https://hub.docker.com/r/pihole/pihole/tags
-FROM pihole/pihole:2022.05
+FROM pihole/pihole:2022.11.2
 
 WORKDIR /usr/src/app
 
 COPY cont-init.d/ /etc/cont-init.d/
 COPY services/ /etc/services.d/
+
+RUN chmod +x /etc/cont-init.d/10-custom.sh && \
+	chmod +x /etc/services.d/padd/*
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -16,11 +19,9 @@ RUN apt-get update && \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # https://github.com/pi-hole/PADD/releases
-ARG PADD_VERSION=3.7.1
-ARG PADD_SHA256=868d340880e0b4ec4f3dfdee34693a01926869e03ce38acc91e0594aa5f3c5f5
+ARG PADD_VERSION=v3.8.1
 
-RUN curl -fsSL https://github.com/pi-hole/PADD/archive/v${PADD_VERSION}.tar.gz -o padd.tar.gz && \
-	echo "${PADD_SHA256}  padd.tar.gz" | sha256sum -c - && \
+RUN curl -fsSL https://github.com/pi-hole/PADD/archive/${PADD_VERSION}.tar.gz -o padd.tar.gz && \
 	tar xzf padd.tar.gz --strip 1 && \
 	rm padd.tar.gz && \
 	chmod +x padd.sh
