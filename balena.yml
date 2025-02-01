@@ -16,11 +16,11 @@ assets:
   repository:
     type: "blob.asset"
     data:
-      url: "https://github.com/klutchell/balena-pihole"
+      url: "https://github.com/t3pfaffe/balena-pihole"
   logo:
     type: "blob.asset"
     data:
-      url: "https://raw.githubusercontent.com/klutchell/balena-pihole/main/logo.png"
+      url: "https://raw.githubusercontent.com/t3pfaffe/balena-pihole/main/logo.png"
 data:
   applicationConfigVariables:
     - BALENA_HOST_CONFIG_gpu_mem: 64
