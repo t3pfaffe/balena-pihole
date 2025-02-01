@@ -28,7 +28,7 @@ data:
     - WEBPASSWORD: 'balena'
     - PIHOLE_DNS_: '1.1.1.1;1.0.0.1'
     - FBCP_DISPLAY: ""
-  defaultDeviceType: "raspberrypi3"
+  defaultDeviceType: "raspberrypi4-64"
   supportedDeviceTypes:
     - "raspberry-pi2"
     - "raspberrypi3"

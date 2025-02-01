@@ -9,7 +9,7 @@ RUN apt-get update && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY cont-init.d/ /etc/cont-init.d/
-COPY s6-overlay/ /etc/s6-overlay/
+# COPY s6-overlay/ /etc/s6-overlay/
 
 RUN chmod +x /etc/cont-init.d/10-custom.sh
 
